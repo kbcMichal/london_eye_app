@@ -19,8 +19,15 @@ LONDON_EYE_WC_PATH = os.path.join(IMAGE_PATH, "static/london_eye_wc.png")
 
 # Streamlit Configurations
 st.set_page_config(layout='wide')
-STORAGE_API_TOKEN = st.secrets['KBC_TOKEN']
-KEBOOLA_HOSTNAME = st.secrets['KBC_URL']
+# Try to get credentials from environment variables
+STORAGE_API_TOKEN = os.environ.get('KBC_TOKEN', None)
+KEBOOLA_HOSTNAME = os.environ.get('KBC_URL', None)
+
+if not STORAGE_API_TOKEN or not KEBOOLA_HOSTNAME:
+    # Fall back to Streamlit secrets if environment variables are not available
+    STORAGE_API_TOKEN = st.secrets['KBC_TOKEN']
+    KEBOOLA_HOSTNAME = st.secrets['KBC_URL']
+
 keboola = KeboolaStreamlit(KEBOOLA_HOSTNAME, STORAGE_API_TOKEN)
 
 # Load Data with Caching
